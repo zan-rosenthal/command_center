@@ -1,6 +1,16 @@
 import { NowRequest, NowResponse } from "@now/node";
+import axios from 'axios'
 
-export default function(req: NowRequest, res: NowResponse) {
-  const { name = "World" } = req.query;
-  res.send(`Hello ${name}!`);
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
+
+const sendToSlack = (json) => {
+  const resp = axios.post(WEBHOOK_URL, {
+    json
+  });
+
+
+export default (req: NowRequest, res: NowResponse) => {
+  sendToSlack(res.body)
+  res.status(200)
+  res.send({ json: { message: "Event processed"}})
 }
